@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MountainViewHolder>  {
-    private ArrayList<Mountain> mountains;
+    private final ArrayList<Mountain> mountains;
 
     public RecyclerViewAdapter(ArrayList<Mountain> mountains) {
         this.mountains = mountains;
@@ -28,12 +28,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final RecyclerViewAdapter.MountainViewHolder holder, int position) {
         String mountain = mountains.get(position).getName();
         String location = mountains.get(position).getLocation();
-        Integer height = mountains.get(position).getHeight();
-        holder.mountain.setText(mountain);
-        holder.location.setText((location));
-        holder.height.setText(height.toString());
-        holder.wiki.setText(mountains.get(position).getAuxdata().getWiki());
+        Integer size = mountains.get(position).getSize();
+        String wiki = mountains.get(position).getAuxdata().getWiki();
 
+        holder.mountain.setText(mountain);
+        holder.location.setText(location);
+        holder.height.setText(size.toString());
+        holder.wiki.setText(wiki);
     }
 
     @Override

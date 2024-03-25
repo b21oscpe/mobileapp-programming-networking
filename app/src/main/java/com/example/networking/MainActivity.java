@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements JsonTask.JsonTaskListener {
 
     private final String JSON_URL = "https://mobprog.webug.se/json-api?login=brom";
-    private final String JSON_FILE = "mountains.json";
+    //private final String JSON_FILE = "mountains.json";
     private ArrayList<Mountain> mountains;
     private RecyclerView recyclerView;
 
@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements JsonTask.JsonTask
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new JsonTask(this).execute(JSON_URL);
-        new JsonFile(this, this).execute(JSON_FILE);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements JsonTask.JsonTask
         Type type = new TypeToken<ArrayList<Mountain>>(){}.getType();
         mountains = gson.fromJson(json, type);
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mountains);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewAdapter.notifyDataSetChanged();
         recyclerView = findViewById(R.id.recycle_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
