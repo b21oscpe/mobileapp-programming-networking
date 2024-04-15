@@ -1,42 +1,48 @@
 
 # Rapport
 
-**Skriv din rapport här!**
-
-_Du kan ta bort all text som finns sedan tidigare_.
-
-## Följande grundsyn gäller dugga-svar:
-
-- Ett kortfattat svar är att föredra. Svar som är längre än en sida text (skärmdumpar och programkod exkluderat) är onödigt långt.
-- Svaret skall ha minst en snutt programkod.
-- Svaret skall inkludera en kort övergripande förklarande text som redogör för vad respektive snutt programkod gör eller som svarar på annan teorifråga.
-- Svaret skall ha minst en skärmdump. Skärmdumpar skall illustrera exekvering av relevant programkod. Eventuell text i skärmdumpar måste vara läsbar.
-- I de fall detta efterfrågas, dela upp delar av ditt svar i för- och nackdelar. Dina för- respektive nackdelar skall vara i form av punktlistor med kortare stycken (3-4 meningar).
-
-Programkod ska se ut som exemplet nedan. Koden måste vara korrekt indenterad då den blir lättare att läsa vilket gör det lättare att hitta syntaktiska fel.
-
+### RecyclerView
+Koden nedan hittas i ```activity_main.xml```, där jag la till en RecyclerView till min layout.
 ```
-function errorCallback(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            // Geolocation API stöds inte, gör något
-            break;
-        case error.POSITION_UNAVAILABLE:
-            // Misslyckat positionsanrop, gör något
-            break;
-        case error.UNKNOWN_ERROR:
-            // Okänt fel, gör något
-            break;
+<androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycle_view"/>
+```
+För att recyclerviewn ska fungera måste man ha en ViewHolder och en Adapter. ViewHoldern wrappar varje enskilt item i listan som Adaptern sedan *binder* (datan associeras med views). 
+
+Nedan finns ett exempel på hur Adaptern extendar RecyclerView.Adapter och sedan skapar en ArrayList av typen ```Mountain``` som ska hålla i alla berg som vi får från JSON-filen. ```Mountain.java``` skapades för att vi skulle kunna behandla JSON-datan som ett java objekt.
+```
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MountainViewHolder>  {
+    private final ArrayList<Mountain> mountains;
+
+    public RecyclerViewAdapter(ArrayList<Mountain> mountains) {
+        this.mountains = mountains;
     }
-}
+    ...
 ```
+```mountains``` listan används sedan när vi ska *binda* data till en viewholder. Detta utförs av adaptern.
+```
+@Override
+    public void onBindViewHolder(@NonNull final RecyclerViewAdapter.MountainViewHolder holder, int position) {
+        String mountain = mountains.get(position).getName();
+        String location = mountains.get(position).getLocation();
+        Integer size = mountains.get(position).getSize();
+        String wiki = mountains.get(position).getAuxdata().getWiki();
 
-Bilder läggs i samma mapp som markdown-filen.
+        holder.mountain.setText(mountain);
+        holder.location.setText(location);
+        holder.height.setText(size.toString());
+        holder.wiki.setText(wiki);
+    }
+```
+Slutligen används följande kod
+```
+private final String JSON_URL = "https://mobprog.webug.se/json-api?login=brom";
+```
+för att ta emot JSON-datan som först behandlas mha. ```JsonTask``` och ```gson```, där JSON konverteras till Java objekt, och kan sedan användas av recyclerviewn.
 
-![](android.png)
 
-Läs gärna:
+### Screenshot
 
-- Boulos, M.N.K., Warren, J., Gong, J. & Yue, P. (2010) Web GIS in practice VIII: HTML5 and the canvas element for interactive online mapping. International journal of health geographics 9, 14. Shin, Y. &
-- Wunsche, B.C. (2013) A smartphone-based golf simulation exercise game for supporting arthritis patients. 2013 28th International Conference of Image and Vision Computing New Zealand (IVCNZ), IEEE, pp. 459–464.
-- Wohlin, C., Runeson, P., Höst, M., Ohlsson, M.C., Regnell, B., Wesslén, A. (2012) Experimentation in Software Engineering, Berlin, Heidelberg: Springer Berlin Heidelberg.
+![Screenshot_20240326_003644](https://github.com/b21oscpe/mobileapp-programming-networking/assets/102578165/ea4882ca-c960-4fcd-9a27-f7c29bb5ad3c)
